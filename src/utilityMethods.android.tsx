@@ -1,7 +1,7 @@
 import { NativeModules } from 'react-native';
 
-const isPreservedWebView = function isPreservedWebView(webViewKey: string) {
-    NativeModules.RNCWebView.isWebViewInstancePreserved(webViewKey);
+const isPreservedWebView = function isPreservedWebView(webViewKey: string): Promise<boolean> {
+    return NativeModules.RNCWebView.isWebViewInstancePreserved(webViewKey);
 }
 
 const releaseWebView = function releaseWebView(webViewKey: string) {
