@@ -1,5 +1,9 @@
 import { NativeModules } from 'react-native';
 
+const isPreservedWebView = function isPreservedWebView(webViewKey: string) {
+    NativeModules.RNCWebView.isWebViewInstancePreserved(webViewKey);
+}
+
 const releaseWebView = function releaseWebView(webViewKey: string) {
     NativeModules.RNCWebView.releasePreservedWebViewInstance(webViewKey);
 }
@@ -8,4 +12,4 @@ const clearWebViews = function clearWebViews() {
     NativeModules.RNCWebView.clearPreservedWebViewInstances();
 }
 
-export { releaseWebView, clearWebViews };
+export { isPreservedWebView, releaseWebView, clearWebViews };
