@@ -1,5 +1,5 @@
 import WebView from './lib/WebView';
-import { releaseWebView, clearWebViews } from './lib/utilityMethods';
+import { isPreservedWebView, releaseWebView, clearWebViews } from './lib/utilityMethods';
 
-export { WebView, releaseWebView, clearWebViews };
+export { WebView, isPreservedWebView, releaseWebView, clearWebViews };
 export default WebView;
