@@ -173,7 +173,6 @@ const WebViewComponent = forwardRef<{}, AndroidWebViewProps>(({
     onShouldStartLoadWithRequest={onShouldStartLoadWithRequest}
 
     ref={webViewRef}
-    // TODO: find a better way to type this.
     source={source}
     style={webViewStyles}
     overScrollMode={overScrollMode}

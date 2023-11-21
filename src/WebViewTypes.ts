@@ -325,8 +325,6 @@ export interface CommonNativeWebViewProps extends ViewProps {
   onShouldStartLoadWithRequest: (event: ShouldStartLoadRequestEvent) => void;
   showsHorizontalScrollIndicator?: boolean;
   showsVerticalScrollIndicator?: boolean;
-  // TODO: find a better way to type this.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   source?: SourcePropType;
   userAgent?: string;
   /**
