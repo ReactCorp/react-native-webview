@@ -365,8 +365,6 @@ export interface AndroidNativeWebViewProps extends CommonNativeWebViewProps {
   minimumFontSize?: number;
   downloadingMessage?: string;
   lackPermissionToDownloadMessage?: string;
-  keepWebViewInstanceAfterUnmount?: boolean;
-  webViewKey?: string;
 }
 
 export declare type ContentInsetAdjustmentBehavior =

@@ -714,16 +714,6 @@ public class RNCWebViewManager extends SimpleViewManager<RNCWebView> {
     view.getSettings().setMinimumFontSize(fontSize);
   }
 
-  @ReactProp(name = "keepWebViewInstanceAfterUnmount")
-  public void setKeepWebViewInstanceAfterUnmount(RNCWebView view, boolean keep) {
-    view.setKeepWebViewInstanceAfterUnmount(keep);
-  }
-
-  @ReactProp(name = "webViewKey")
-  public void setWebViewKey(RNCWebView view, String key) {
-    view.setWebViewKey(key);
-  }
-
   @Override
   protected void addEventEmitters(ThemedReactContext reactContext, RNCWebView view) {
     // Do not register default touch emitter and let WebView implementation handle touches
