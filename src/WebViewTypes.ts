@@ -1,15 +1,15 @@
 /* eslint-disable react/no-multi-comp, max-classes-per-file */
 
-import { ReactElement, Component } from 'react';
+import { Component, ReactElement } from 'react';
 import {
-  NativeSyntheticEvent,
-  ViewProps,
-  StyleProp,
-  ViewStyle,
-  NativeMethodsMixin,
   Constructor,
-  UIManagerStatic,
+  NativeMethodsMixin,
   NativeScrollEvent,
+  NativeSyntheticEvent,
+  StyleProp,
+  UIManagerStatic,
+  ViewProps,
+  ViewStyle,
 } from 'react-native';
 
 type WebViewCommands =
@@ -280,6 +280,31 @@ export interface BasicAuthCredential {
   password: string;
 }
 
+interface KeepWebViewPropType {
+  /**
+   * By default, if this is undefined or false, the native WebView will get released when
+   * the React component unmounts.
+   *
+   * When this is true, the native WebView will not get released when the React component
+   * unmounts. When a React component remounts, it can use a previous native WebView instance
+   * by using the same webViewKey prop that the previous React component used.
+   *
+   * It's important to call `release` on the React WebView with the corresponding webViewKey
+   * when the native WebView is no longer needed.
+   * @platform android
+   */
+  keepWebViewInstanceAfterUnmount?: boolean;
+
+  /**
+   * When keepWebViewInstanceAfterUnmount is true, if two React components use the same
+   * key for the WebView, they will use the same native WebView instance.
+   * @platform android
+   */
+  webViewKey?: string;
+}
+
+export type SourcePropType = WebViewSource & KeepWebViewPropType
+
 export interface CommonNativeWebViewProps extends ViewProps {
   cacheEnabled?: boolean;
   incognito?: boolean;
@@ -302,7 +327,7 @@ export interface CommonNativeWebViewProps extends ViewProps {
   showsVerticalScrollIndicator?: boolean;
   // TODO: find a better way to type this.
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  source: any;
+  source?: SourcePropType;
   userAgent?: string;
   /**
    * Append to the existing user-agent. Overridden if `userAgent` is set.
@@ -1146,7 +1171,7 @@ export interface WebViewSharedProps extends ViewProps {
   /**
    * Loads static html or a uri (with optional headers) in the WebView.
    */
-  source?: WebViewSource;
+  source?: SourcePropType;
 
   /**
    * Boolean value to enable JavaScript in the `WebView`. Used on Android only
