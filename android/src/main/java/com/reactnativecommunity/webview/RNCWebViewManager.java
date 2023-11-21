@@ -535,12 +535,12 @@ public class RNCWebViewManager extends SimpleViewManager<RNCWebView> {
   public void setSource(RNCWebView view, @Nullable ReadableMap source) {
     RNCWebViewModule module = getModule(mReactContext);
     if (source.hasKey("keepWebViewInstanceAfterUnmount")) {
-      boolean keep = source.getBoolean("keepWebViewInstanceAfterUnmount"));
+      boolean keep = source.getBoolean("keepWebViewInstanceAfterUnmount");
       view.setKeepWebViewInstanceAfterUnmount(keep);
     }
     if (source.hasKey("webViewKey")) {
-      String key = source.getString("webViewKey")
-      view.setWebViewKey(key)
+      String key = source.getString("webViewKey");
+      view.setWebViewKey(key);
     }
 
     // WebView インスタンスを使い回すようオプションが設定されている場合
