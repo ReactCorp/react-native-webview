@@ -1,9 +1,9 @@
 import * as React from 'react';
-import {View, Button} from 'react-native';
+import { Button, View } from 'react-native';
+import WebView, { clearWebViews, releaseWebView } from 'react-native-webview';
+import { PortalContext } from '../portals/PortalContext';
 import PortalGate from '../portals/PortalGate';
 import PortalProvider from '../portals/PortalProvider';
-import WebView, { releaseWebView, clearWebViews } from 'react-native-webview';
-import { PortalContext } from '../portals/PortalContext';
 
 const IFRAME_URI = 'https://www.usaswimming.org';
 const BLUE_GATE_NAME = 'blueGate';
@@ -66,9 +66,7 @@ function PortalGatesPage() {
   const webView = React.useMemo(() => {
     return (
       <WebView
-          source={source}
-          webViewKey={WEB_VIEW_KEY}
-          keepWebViewInstanceAfterUnmount
+          source={{ ...source, webViewKey: WEB_VIEW_KEY, keepWebViewInstanceAfterUnmount: true }}
           ref={webViewRef}
           startInLoadingState
           onLoad={() => { console.log("onLoad") }}
