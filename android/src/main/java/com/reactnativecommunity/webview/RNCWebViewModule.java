@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Parcelable;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.view.ViewGroup;
 
@@ -47,6 +48,7 @@ import static android.app.Activity.RESULT_OK;
 @ReactModule(name = RNCWebViewModule.MODULE_NAME)
 public class RNCWebViewModule extends ReactContextBaseJavaModule implements ActivityEventListener {
   public static final String MODULE_NAME = "RNCWebView";
+  private final ReactApplicationContext reactContext;
   private static final int PICKER = 1;
   private static final int PICKER_LEGACY = 3;
   private static final int FILE_DOWNLOAD_PERMISSION_REQUEST = 1;
@@ -122,6 +124,7 @@ public class RNCWebViewModule extends ReactContextBaseJavaModule implements Acti
 
   public RNCWebViewModule(ReactApplicationContext reactContext) {
     super(reactContext);
+    this.reactContext = reactContext;
     reactContext.addActivityEventListener(this);
   }
 
@@ -156,20 +159,28 @@ public class RNCWebViewModule extends ReactContextBaseJavaModule implements Acti
 
   private void recycleWebView(String key) {
     if (this.preservedWebViewInstances.containsKey(key)) {
-      WebView webview = this.getPreservedWebViewInstance(key);
-      // load
-      webview.stopLoading();
-      // js
-      webview.clearHistory();
-      webview.clearCache(true);
-      webview.clearFormData();
-      // parent
-      ViewGroup parent = (ViewGroup) webview.getParent();
-      if (parent != null) {
-        parent.removeView(webview);
-      }
-      // destroy
-      webview.destroy();
+      final WebView webview = this.getPreservedWebViewInstance(key);
+      new Handler(reactContext.getMainLooper()).post(new Runnable() {
+
+        @Override
+        public void run() {
+          if (webview != null) {
+            // load
+            webview.stopLoading();
+            // js
+            webview.clearHistory();
+            webview.clearCache(true);
+            webview.clearFormData();
+            // parent
+            ViewGroup parent = (ViewGroup) webview.getParent();
+            if (parent != null) {
+              parent.removeView(webview);
+            }
+            // destroy
+            webview.destroy();
+          }
+        }
+      });
     }
   }
 
