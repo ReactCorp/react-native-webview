@@ -548,6 +548,8 @@ public class RNCWebViewManager extends SimpleViewManager<RNCWebView> {
       // 初回の setSource 呼び出しで、かつ保持されている WebView インスタンスが既にある場合は、それを利用する。loadUrl() などは呼び出さない
       if (!view.isSourceInitialized() && module.isWebViewInstancePreserved(view.getWebViewKey())) {
         WebView webview = module.getPreservedWebViewInstance(view.getWebViewKey());
+        // 状況によってpauseしてあるためresumeする
+        webview.onResume();
         ViewGroup parent = (ViewGroup) webview.getParent();
         if (parent != null) {
           parent.removeView(webview);
