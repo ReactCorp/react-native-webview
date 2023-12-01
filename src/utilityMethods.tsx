@@ -10,11 +10,3 @@ export function releaseWebView(_webViewKey: string) {
 export function clearWebViews() {
     // no-op
 }
-
-export function pauseWebView(_webViewKey: string) {
-    // no-op
-}
-
-export function resumeWebView(_webViewKey: string) {
-    // no-op
-}

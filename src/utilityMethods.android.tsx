@@ -12,12 +12,4 @@ const clearWebViews = function clearWebViews() {
     NativeModules.RNCWebView.clearPreservedWebViewInstances();
 }
 
-const pauseWebView = function pauseWebView(webViewKey: string) {
-    NativeModules.RNCWebView.pauseWebView(webViewKey);
-}
-
-const resumeWebView = function resumeWebView(webViewKey: string) {
-    NativeModules.RNCWebView.resumeWebView(webViewKey);
-}
-
-export { isPreservedWebView, releaseWebView, clearWebViews, pauseWebView, resumeWebView };
+export { isPreservedWebView, releaseWebView, clearWebViews };
