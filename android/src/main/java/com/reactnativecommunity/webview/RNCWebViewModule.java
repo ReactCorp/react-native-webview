@@ -218,20 +218,32 @@ public class RNCWebViewModule extends ReactContextBaseJavaModule implements Acti
   @ReactMethod
   public void pauseWebView(String key) {
     if (this.preservedWebViewInstances.containsKey(key)) {
-      WebView webview = this.getPreservedWebViewInstance(key);
-      if (webview != null) {
-        webview.onPause();
-      }
+      final WebView webview = this.getPreservedWebViewInstance(key);
+      new Handler(reactContext.getMainLooper()).post(new Runnable() {
+
+        @Override
+        public void run() {
+          if (webview != null) {
+            webview.onPause();
+          }
+        }
+      });
     }
   }
 
   @ReactMethod
   public void resumeWebView(String key) {
     if (this.preservedWebViewInstances.containsKey(key)) {
-      WebView webview = this.getPreservedWebViewInstance(key);
-      if (webview != null) {
-        webview.onResume();
-      }
+      final WebView webview = this.getPreservedWebViewInstance(key);
+      new Handler(reactContext.getMainLooper()).post(new Runnable() {
+
+        @Override
+        public void run() {
+          if (webview != null) {
+            webview.onResume();
+          }
+        }
+      });
     }
   }
 
