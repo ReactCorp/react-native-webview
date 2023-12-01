@@ -550,6 +550,7 @@ public class RNCWebViewManager extends SimpleViewManager<RNCWebView> {
         WebView webview = module.getPreservedWebViewInstance(view.getWebViewKey());
         // 状況によってpauseしてあるためresumeする
         webview.onResume();
+        webview.reload();
         ViewGroup parent = (ViewGroup) webview.getParent();
         if (parent != null) {
           parent.removeView(webview);

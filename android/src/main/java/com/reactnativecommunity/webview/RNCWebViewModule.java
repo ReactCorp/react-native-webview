@@ -224,6 +224,7 @@ public class RNCWebViewModule extends ReactContextBaseJavaModule implements Acti
         @Override
         public void run() {
           if (webview != null) {
+            webview.stopLoading();
             webview.onPause();
           }
         }
@@ -240,6 +241,7 @@ public class RNCWebViewModule extends ReactContextBaseJavaModule implements Acti
         @Override
         public void run() {
           if (webview != null) {
+            webview.reload();
             webview.onResume();
           }
         }
