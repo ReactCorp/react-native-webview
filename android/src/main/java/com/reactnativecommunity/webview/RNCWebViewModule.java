@@ -153,6 +153,25 @@ public class RNCWebViewModule extends ReactContextBaseJavaModule implements Acti
     }
   }
 
+  private void recycleWebView(String key) {
+    if (this.preservedWebViewInstances.containsKey(key)) {
+      WebView webview = this.getPreservedWebViewInstance(key);
+      // load
+      webview.stopLoading();
+      // js
+      webview.clearHistory();
+      webview.clearCache(true);
+      webview.clearFormData();
+      // parent
+      ViewGroup parent = (ViewGroup) webview.getParent();
+      if (parent != null) {
+        parent.removeView(webview);
+      }
+      // destroy
+      webview.destroy();
+    }
+  }
+
   public void preserveWebViewInstance(String key, WebView view) {
     this.preservedWebViewInstances.put(key, view);
   }
@@ -172,11 +191,15 @@ public class RNCWebViewModule extends ReactContextBaseJavaModule implements Acti
 
   @ReactMethod
   public void releasePreservedWebViewInstance(String key) {
+    this.recycleWebView(key);
     this.preservedWebViewInstances.remove(key);
   }
 
   @ReactMethod
   public void clearPreservedWebViewInstances() {
+    for (String key: this.preservedWebViewInstances.keySet()) {
+      this.recycleWebView(key);
+    }
     this.preservedWebViewInstances.clear();
   }
 
