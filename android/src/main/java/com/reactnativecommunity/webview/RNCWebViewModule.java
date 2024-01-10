@@ -169,7 +169,7 @@ public class RNCWebViewModule extends ReactContextBaseJavaModule implements Acti
             webview.stopLoading();
             // js
             webview.clearHistory();
-            webview.clearCache(true);
+            webview.clearCache(false);
             webview.clearFormData();
             // parent
             ViewGroup parent = (ViewGroup) webview.getParent();
