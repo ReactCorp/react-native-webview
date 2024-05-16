@@ -151,7 +151,7 @@ public class RNCWebViewManager extends SimpleViewManager<RNCWebView> {
   // Use `webView.loadUrl("about:blank")` to reliably reset the view
   // state and release page resources (including any running JavaScript).
   protected static final String BLANK_URL = "about:blank";
-  protected static final int SHOULD_OVERRIDE_URL_LOADING_TIMEOUT = 250;
+  protected static final int SHOULD_OVERRIDE_URL_LOADING_TIMEOUT = 10000;
   protected static final String DEFAULT_DOWNLOADING_MESSAGE = "Downloading";
   protected static final String DEFAULT_LACK_PERMISSION_TO_DOWNLOAD_MESSAGE =
     "Cannot download files as permission was denied. Please provide permission to write to storage, in order to download files.";
