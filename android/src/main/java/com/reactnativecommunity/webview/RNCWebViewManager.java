@@ -216,7 +216,7 @@ public class RNCWebViewManager extends SimpleViewManager<RNCWebView> {
       new LayoutParams(LayoutParams.MATCH_PARENT,
         LayoutParams.MATCH_PARENT));
 
-    if ((ReactBuildConfig.DEBUG || ReactBuildConfig.IS_INTERNAL_BUILD) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+    if ((ReactBuildConfig.DEBUG || ApplicationInfo.FLAG_DEBUGGABLE) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
       WebView.setWebContentsDebuggingEnabled(true);
     }
 
