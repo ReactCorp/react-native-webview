@@ -3,6 +3,7 @@ package com.reactnativecommunity.webview;
 import android.app.DownloadManager;
 import android.net.Uri;
 import android.webkit.ValueCallback;
+import android.webkit.WebView;
 
 import androidx.annotation.NonNull;
 
@@ -27,6 +28,33 @@ public class RNCWebViewModule extends NativeRNCWebViewModuleSpec {
     @Override
     public void shouldStartLoadWithLockIdentifier(boolean shouldStart, double lockIdentifier) {
         mRNCWebViewModuleImpl.shouldStartLoadWithLockIdentifier(shouldStart, lockIdentifier);
+    }
+
+    @Override
+    public void clearPreservedWebViewInstances() {
+        mRNCWebViewModuleImpl.clearPreservedWebViewInstances();
+    }
+
+    @Override
+    public void releasePreservedWebViewInstance(String webViewKey) {
+       mRNCWebViewModuleImpl.releasePreservedWebViewInstance(webViewKey);
+    }
+
+    @Override
+    public void isWebViewInstancePreserved(String webViewKey, Promise promise) {
+      promise.resolve(mRNCWebViewModuleImpl.isWebViewInstancePreserved(webViewKey));
+    }
+
+    public WebView getPreservedWebViewInstance(String webViewKey) {
+        return mRNCWebViewModuleImpl.getPreservedWebViewInstance(webViewKey);
+    }
+
+    public void preserveWebViewInstance(String key, WebView view) {
+        mRNCWebViewModuleImpl.preserveWebViewInstance(key, view);
+    }
+
+    public boolean isWebViewInstancePreserved(String webViewKey) {
+      return mRNCWebViewModuleImpl.isWebViewInstancePreserved(webViewKey);
     }
 
     public void startPhotoPickerIntent(ValueCallback<Uri> filePathCallback, String acceptType) {

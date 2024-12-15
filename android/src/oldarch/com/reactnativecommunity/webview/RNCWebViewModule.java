@@ -31,6 +31,21 @@ public class RNCWebViewModule extends ReactContextBaseJavaModule {
         mRNCWebViewModuleImpl.shouldStartLoadWithLockIdentifier(shouldStart, lockIdentifier);
     }
 
+    @ReactMethod
+    public void clearPreservedWebViewInstances() {
+        mRNCWebViewModuleImpl.clearPreservedWebViewInstances();
+    }
+
+    @ReactMethod
+    public void releasePreservedWebViewInstance(String webViewKey) {
+        mRNCWebViewModuleImpl.releasePreservedWebViewInstance(webViewKey);
+    }
+
+    @ReactMethod
+    public void isWebViewInstancePreserved(String webViewKey, final Promise promise) {
+        promise.resolve(mRNCWebViewModuleImpl.isWebViewInstancePreserved(webViewKey));
+    }
+
     public void startPhotoPickerIntent(ValueCallback<Uri> filePathCallback, String acceptType) {
         mRNCWebViewModuleImpl.startPhotoPickerIntent(acceptType, filePathCallback);
     }
