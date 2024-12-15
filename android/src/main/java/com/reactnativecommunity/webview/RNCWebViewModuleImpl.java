@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.Parcelable;
 import android.provider.MediaStore;
 
@@ -19,9 +20,11 @@ import androidx.core.content.FileProvider;
 import androidx.core.util.Pair;
 
 import android.util.Log;
+import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
+import android.webkit.WebView;
 import android.widget.Toast;
 
 import com.facebook.common.activitylistener.ActivityListenerManager;
@@ -59,6 +62,8 @@ public class RNCWebViewModuleImpl implements ActivityEventListener {
     private ValueCallback<Uri[]> mFilePathCallback;
     private File mOutputImage;
     private File mOutputVideo;
+
+    private HashMap<String, WebView> preservedWebViewInstances = new HashMap<>();
 
     public RNCWebViewModuleImpl(ReactApplicationContext context) {
         mContext = context;
@@ -551,4 +556,47 @@ public class RNCWebViewModuleImpl implements ActivityEventListener {
         }
         return (PermissionAwareActivity) activity;
     }
+
+    private void recycleWebView(final String key) {
+        if (preservedWebViewInstances.containsKey(key)) {
+            final WebView webView = preservedWebViewInstances.get(key);
+            new Handler(mContext.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    if (webView != null) {
+                        webView.stopLoading();
+                        webView.clearHistory();
+                        webView.clearCache(false);
+                        webView.clearFormData();
+                        ((ViewGroup) webView.getParent()).removeView(webView);
+                        webView.destroy();
+                    }
+                }
+            });
+        }
+    }
+
+  public void preserveWebViewInstance(String key, WebView view) {
+      preservedWebViewInstances.put(key, view);
+  }
+
+  public WebView getPreservedWebViewInstance(String key) {
+      return preservedWebViewInstances.get(key);
+  }
+
+  public boolean isWebViewInstancePreserved(String key) {
+      return preservedWebViewInstances.containsKey(key);
+  }
+
+  public void releasePreservedWebViewInstance(String key) {
+      this.recycleWebView(key);
+      preservedWebViewInstances.remove(key);
+  }
+
+  public void clearPreservedWebViewInstances() {
+    for (String key : preservedWebViewInstances.keySet()) {
+        this.recycleWebView(key);
+    }
+    preservedWebViewInstances.clear();
+  }
 }

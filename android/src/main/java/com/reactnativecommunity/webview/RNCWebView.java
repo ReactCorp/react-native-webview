@@ -70,6 +70,10 @@ public class RNCWebView extends WebView implements LifecycleEventListener {
     protected boolean nestedScrollEnabled = false;
     protected ProgressChangedFilter progressChangedFilter;
 
+    protected boolean keepWebViewInstanceAfterUnmount = false;
+    protected String webViewKey = null;
+    protected boolean sourceInitialized = false;
+
     /**
      * WebView must be created with an context of the current activity
      * <p>
@@ -396,7 +400,11 @@ public class RNCWebView extends WebView implements LifecycleEventListener {
       return this.getThemedReactContext().getReactApplicationContext();
   }
 
-  protected class RNCWebViewBridge {
+  public boolean configuredToKeepWebViewInstance() {
+    return this.keepWebViewInstanceAfterUnmount && this.webViewKey != null;
+  }
+
+    protected class RNCWebViewBridge {
         private String TAG = "RNCWebViewBridge";
         RNCWebView mWebView;
         String injectedObjectJson;

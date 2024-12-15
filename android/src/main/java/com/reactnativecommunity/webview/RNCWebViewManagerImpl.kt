@@ -17,6 +17,7 @@ import android.webkit.WebSettings
 import android.webkit.WebView
 import androidx.webkit.WebSettingsCompat
 import androidx.webkit.WebViewFeature
+import com.facebook.react.bridge.ReactContext
 import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.common.MapBuilder
@@ -34,9 +35,9 @@ val invalidCharRegex = "[\\\\/%\"]".toRegex()
 class RNCWebViewManagerImpl(private val newArch: Boolean = false) {
     companion object {
         const val NAME = "RNCWebView"
+        private const val TAG = "RNCWebViewManagerImpl"
     }
 
-    private val TAG = "RNCWebViewManagerImpl"
     private var mWebViewConfig: RNCWebViewConfig = RNCWebViewConfig { webView: WebView? -> }
     private var mAllowsFullscreenVideo = false
     private var mAllowsProtectedMedia = false
@@ -277,6 +278,19 @@ class RNCWebViewManagerImpl(private val newArch: Boolean = false) {
     }
 
     fun onDropViewInstance(viewWrapper: RNCWebViewWrapper) {
+        val module = viewWrapper.reactContext.getModule()!!
+        val view = viewWrapper.webView
+        if (
+            view.configuredToKeepWebViewInstance() &&
+            module.isWebViewInstancePreserved(view.webViewKey)
+        ) {
+            val preservedInstance = module.getPreservedWebViewInstance(view.webViewKey!!)
+            if (preservedInstance === view) {
+                // WebView インスタンスが保持される設定だった場合、onDrop の各種処理をスキップする
+                return
+            }
+        }
+
         val webView = viewWrapper.webView
         webView.themedReactContext.removeLifecycleEventListener(webView)
         webView.cleanupCallbacksAndDestroy()
@@ -387,6 +401,41 @@ class RNCWebViewManagerImpl(private val newArch: Boolean = false) {
 
     private fun loadSource(viewWrapper: RNCWebViewWrapper, source: ReadableMap?) {
         val view = viewWrapper.webView
+
+        if (source?.hasKey("keepWebViewInstanceAfterUnmount") == true) {
+            val keep = source.getBoolean("keepWebViewInstanceAfterUnmount")
+            view.keepWebViewInstanceAfterUnmount = keep
+        }
+        if (source?.hasKey("webViewKey") == true) {
+            val key = source.getString("webViewKey")
+            view.webViewKey = key
+        }
+
+        // WebView インスタンスを使い回すようオプションが設定されている場合
+        if (view.configuredToKeepWebViewInstance()) {
+            // 初回の setSource 呼び出しで、かつ保持されている WebView インスタンスが既にある場合は、それを利用する
+            // loadUrl() などは呼び出さない
+            val module = viewWrapper.reactContext.getModule()!!
+            if (
+                !view.sourceInitialized &&
+                module.isWebViewInstancePreserved(view.webViewKey)
+            ) {
+                val webView = module.getPreservedWebViewInstance(view.webViewKey!!)?.also { wb ->
+                    val parent = wb.parent as ViewGroup
+                    parent.removeView(wb)
+                    parent.addView(wb)
+                    view.sourceInitialized = true
+                }
+
+                view.getRNCWebViewClient()?.emitFinishEvent(webView, source?.getString("uri"))
+                return
+            } else {
+                // そうでない場合はインスタンスを保持し、loadUrl() などの以降の処理も行う
+                module.preserveWebViewInstance(view.webViewKey!!, view)
+                view.sourceInitialized = true
+            }
+        }
+
         if (source != null) {
             if (source.hasKey("html")) {
                 val html = source.getString("html")
@@ -544,6 +593,16 @@ class RNCWebViewManagerImpl(private val newArch: Boolean = false) {
         val view = viewWrapper.webView
         view.setHasScrollEvent(value)
     }
+
+  fun setKeepWebViewInstanceAfterUnmount(viewWrapper: RNCWebViewWrapper, value: Boolean) {
+    val view = viewWrapper.webView
+    view.keepWebViewInstanceAfterUnmount = value
+  }
+
+  fun setWebViewKey(viewWrapper: RNCWebViewWrapper, value: String?) {
+    val view = viewWrapper.webView
+    view.webViewKey = value
+  }
 
     fun setJavaScriptEnabled(viewWrapper: RNCWebViewWrapper, enabled: Boolean) {
         val view = viewWrapper.webView
@@ -718,3 +777,8 @@ class RNCWebViewManagerImpl(private val newArch: Boolean = false) {
         RNCWebView.setWebContentsDebuggingEnabled(enabled)
     }
 }
+
+fun ReactContext.getModule(): RNCWebViewModule? = this.getNativeModule(RNCWebViewModule::class.java)
+
+val RNCWebViewWrapper.reactContext: ReactContext
+  get() = this.context as ReactContext
