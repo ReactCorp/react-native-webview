@@ -96,6 +96,8 @@ const WebViewComponent = forwardRef<{}, AndroidWebViewProps>(
       nativeConfig,
       onShouldStartLoadWithRequest: onShouldStartLoadWithRequestProp,
       injectedJavaScriptObject,
+      keepWebViewInstanceAfterUnmount,
+      webViewKey,
       ...otherProps
     },
     ref
@@ -313,6 +315,8 @@ const WebViewComponent = forwardRef<{}, AndroidWebViewProps>(
         setDisplayZoomControls={setDisplayZoomControls}
         nestedScrollEnabled={nestedScrollEnabled}
         injectedJavaScriptObject={JSON.stringify(injectedJavaScriptObject)}
+        keepWebViewInstanceAfterUnmount={keepWebViewInstanceAfterUnmount}
+        webViewKey={webViewKey}
         {...nativeConfig?.props}
       />
     );
@@ -327,8 +331,18 @@ const WebViewComponent = forwardRef<{}, AndroidWebViewProps>(
 );
 
 // native implementation should return "true" only for Android 5+
-const { isFileUploadSupported } = RNCWebViewModule;
+const {
+  isFileUploadSupported,
+  clearPreservedWebViewInstances,
+  releasePreservedWebViewInstance,
+  isWebViewInstancePreserved,
+} = RNCWebViewModule;
 
-const WebView = Object.assign(WebViewComponent, { isFileUploadSupported });
+const WebView = Object.assign(WebViewComponent, {
+  isFileUploadSupported,
+  clearPreservedWebViewInstances,
+  releasePreservedWebViewInstance,
+  isWebViewInstancePreserved,
+});
 
 export default WebView;

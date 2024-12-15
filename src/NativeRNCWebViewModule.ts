@@ -8,6 +8,10 @@ export interface Spec extends TurboModule {
     shouldStart: boolean,
     lockIdentifier: Double
   ): void;
+
+  clearPreservedWebViewInstances: () => Promise<void>;
+  releasePreservedWebViewInstance: (webViewKey: string) => Promise<void>;
+  isWebViewInstancePreserved: (webViewKey: string) => Promise<boolean>;
 }
 
 export default TurboModuleRegistry.getEnforcing<Spec>('RNCWebViewModule');
