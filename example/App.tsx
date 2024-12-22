@@ -25,6 +25,7 @@ import CustomMenu from './examples/CustomMenu';
 import OpenWindow from './examples/OpenWindow';
 import SuppressMenuItems from './examples/Suppress';
 import ClearData from './examples/ClearData';
+import KeepInstance from './examples/KeepInstance';
 
 const TESTS = {
   Messaging: {
@@ -145,6 +146,14 @@ const TESTS = {
     description: 'SuppressMenuItems in editable content',
     render() {
       return <SuppressMenuItems />;
+    },
+  },
+  KeepInstance: {
+    title: 'KeepInstance',
+    testId: 'KeepInstance',
+    description: 'keepWebViewInstanceAfterUnmount',
+    render() {
+      return <KeepInstance />;
     },
   },
 };
@@ -269,6 +278,11 @@ export default class App extends Component<Props, State> {
             testID="testType_clearData"
             title="ClearData"
             onPress={() => this._changeTest('ClearData')}
+          />
+          <Button
+            testID="testType_keepInstance"
+            title="KeepInstance"
+            onPress={() => this._changeTest('KeepInstance')}
           />
         </View>
 
