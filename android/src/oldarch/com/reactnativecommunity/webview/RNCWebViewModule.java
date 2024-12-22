@@ -5,6 +5,7 @@ import android.net.Uri;
 
 import androidx.annotation.NonNull;
 import android.webkit.ValueCallback;
+import android.webkit.WebView;
 
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -65,6 +66,18 @@ public class RNCWebViewModule extends ReactContextBaseJavaModule {
     public boolean grantFileDownloaderPermissions(String downloadingMessage, String lackPermissionToDownloadMessage) {
         return mRNCWebViewModuleImpl.grantFileDownloaderPermissions(downloadingMessage, lackPermissionToDownloadMessage);
     }
+
+  public void preserveWebViewInstance(String key, WebView view) {
+    mRNCWebViewModuleImpl.preserveWebViewInstance(key, view);
+  }
+
+  public boolean isWebViewInstancePreserved(String webViewKey) {
+    return mRNCWebViewModuleImpl.isWebViewInstancePreserved(webViewKey);
+  }
+
+  public WebView getPreservedWebViewInstance(String webViewKey) {
+    return mRNCWebViewModuleImpl.getPreservedWebViewInstance(webViewKey);
+  }
 
     @NonNull
     @Override

@@ -153,16 +153,6 @@ public class RNCWebViewManager extends ViewGroupManager<RNCWebViewWrapper>
         mRNCWebViewManagerImpl.setHasOnScroll(view, hasScrollEvent);
     }
 
-  @Override
-  public void setKeepWebViewInstanceAfterUnmount(RNCWebViewWrapper view, boolean value) {
-    mRNCWebViewManagerImpl.setKeepWebViewInstanceAfterUnmount(view, value);
-  }
-
-  @Override
-  public void setWebViewKey(RNCWebViewWrapper view, @Nullable String value) {
-    mRNCWebViewManagerImpl.setWebViewKey(view, value);
-  }
-
     @Override
     @ReactProp(name = "incognito")
     public void setIncognito(RNCWebViewWrapper view, boolean value) {

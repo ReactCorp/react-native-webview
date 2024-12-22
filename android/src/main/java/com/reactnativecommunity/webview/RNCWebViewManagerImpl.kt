@@ -22,6 +22,7 @@ import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.common.MapBuilder
 import com.facebook.react.common.build.ReactBuildConfig
+import com.facebook.react.modules.core.DeviceEventManagerModule
 import com.facebook.react.uimanager.ThemedReactContext
 import org.json.JSONException
 import org.json.JSONObject
@@ -29,6 +30,7 @@ import java.io.UnsupportedEncodingException
 import java.net.MalformedURLException
 import java.net.URL
 import java.util.Locale
+
 
 val invalidCharRegex = "[\\\\/%\"]".toRegex()
 
@@ -99,6 +101,7 @@ class RNCWebViewManagerImpl(private val newArch: Boolean = false) {
                 DownloadManager.Request(Uri.parse(url))
             } catch (e: IllegalArgumentException) {
                 Log.w(TAG, "Unsupported URI, aborting download", e)
+                context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java).emit("FILE_DOWNLOAD_FAILED_WEBVIEW", url)
                 return@DownloadListener
             }
             var fileName = URLUtil.guessFileName(url, contentDisposition, mimetype)
@@ -593,16 +596,6 @@ class RNCWebViewManagerImpl(private val newArch: Boolean = false) {
         val view = viewWrapper.webView
         view.setHasScrollEvent(value)
     }
-
-  fun setKeepWebViewInstanceAfterUnmount(viewWrapper: RNCWebViewWrapper, value: Boolean) {
-    val view = viewWrapper.webView
-    view.keepWebViewInstanceAfterUnmount = value
-  }
-
-  fun setWebViewKey(viewWrapper: RNCWebViewWrapper, value: String?) {
-    val view = viewWrapper.webView
-    view.webViewKey = value
-  }
 
     fun setJavaScriptEnabled(viewWrapper: RNCWebViewWrapper, enabled: Boolean) {
         val view = viewWrapper.webView

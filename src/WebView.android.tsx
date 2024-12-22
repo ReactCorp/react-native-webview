@@ -96,8 +96,6 @@ const WebViewComponent = forwardRef<{}, AndroidWebViewProps>(
       nativeConfig,
       onShouldStartLoadWithRequest: onShouldStartLoadWithRequestProp,
       injectedJavaScriptObject,
-      keepWebViewInstanceAfterUnmount,
-      webViewKey,
       ...otherProps
     },
     ref
@@ -315,8 +313,6 @@ const WebViewComponent = forwardRef<{}, AndroidWebViewProps>(
         setDisplayZoomControls={setDisplayZoomControls}
         nestedScrollEnabled={nestedScrollEnabled}
         injectedJavaScriptObject={JSON.stringify(injectedJavaScriptObject)}
-        keepWebViewInstanceAfterUnmount={keepWebViewInstanceAfterUnmount}
-        webViewKey={webViewKey}
         {...nativeConfig?.props}
       />
     );

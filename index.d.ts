@@ -61,5 +61,16 @@ declare class WebView<P = {}> extends Component<WebViewProps & P> {
     clearHistory?: () => void;
 }
 
-export {WebView};
+function isFileUploadSupported(): Promise<boolean>;
+function clearPreservedWebViewInstances(): void;
+function releasePreservedWebViewInstance(webViewKey: string): void;
+function isWebViewInstancePreserved(webViewKey: string): Promise<boolean>;
+
+export {
+  WebView,
+  isFileUploadSupported,
+  clearPreservedWebViewInstances,
+  releasePreservedWebViewInstance,
+  isWebViewInstancePreserved,
+};
 export default WebView;
