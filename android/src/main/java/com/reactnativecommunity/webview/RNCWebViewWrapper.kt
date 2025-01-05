@@ -3,8 +3,10 @@ package com.reactnativecommunity.webview
 import android.content.Context
 import android.graphics.Color
 import android.view.View
+import android.view.ViewGroup
 import android.webkit.WebView
 import android.widget.FrameLayout
+
 
 /**
  * A [FrameLayout] container to hold the [RNCWebView].
@@ -20,7 +22,16 @@ class RNCWebViewWrapper(context: Context, webView: RNCWebView) : FrameLayout(con
     addView(webView)
   }
 
-  val webView: RNCWebView = getChildAt(0) as RNCWebView
+  var webView: RNCWebView
+    get() = getChildAt(0) as RNCWebView
+    set(value) {
+      removeViewAt(0)
+      value.layoutParams = ViewGroup.LayoutParams(
+        ViewGroup.LayoutParams.MATCH_PARENT,
+        ViewGroup.LayoutParams.MATCH_PARENT,
+      )
+      addView(value)
+    }
 
   companion object {
     /**

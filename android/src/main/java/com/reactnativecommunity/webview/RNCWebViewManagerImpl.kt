@@ -31,7 +31,6 @@ import java.net.MalformedURLException
 import java.net.URL
 import java.util.Locale
 
-
 val invalidCharRegex = "[\\\\/%\"]".toRegex()
 
 class RNCWebViewManagerImpl(private val newArch: Boolean = false) {
@@ -290,6 +289,7 @@ class RNCWebViewManagerImpl(private val newArch: Boolean = false) {
             val preservedInstance = module.getPreservedWebViewInstance(view.webViewKey!!)
             if (preservedInstance === view) {
                 // WebView インスタンスが保持される設定だった場合、onDrop の各種処理をスキップする
+                Log.d(TAG, "WebView instance is preserved. Skip onDropViewInstance.")
                 return
             }
         }
@@ -403,39 +403,41 @@ class RNCWebViewManagerImpl(private val newArch: Boolean = false) {
     }
 
     private fun loadSource(viewWrapper: RNCWebViewWrapper, source: ReadableMap?) {
-        val view = viewWrapper.webView
+        Log.d(TAG, "loadSource: $source")
+        val webView = viewWrapper.webView
 
         if (source?.hasKey("keepWebViewInstanceAfterUnmount") == true) {
             val keep = source.getBoolean("keepWebViewInstanceAfterUnmount")
-            view.keepWebViewInstanceAfterUnmount = keep
+            webView.keepWebViewInstanceAfterUnmount = keep
         }
         if (source?.hasKey("webViewKey") == true) {
             val key = source.getString("webViewKey")
-            view.webViewKey = key
+            webView.webViewKey = key
         }
 
         // WebView インスタンスを使い回すようオプションが設定されている場合
-        if (view.configuredToKeepWebViewInstance()) {
-            // 初回の setSource 呼び出しで、かつ保持されている WebView インスタンスが既にある場合は、それを利用する
+        if (webView.configuredToKeepWebViewInstance()) {
+            // 初回の loadSource 呼び出しで、かつ保持されている WebView インスタンスが既にある場合は、それを利用する
             // loadUrl() などは呼び出さない
             val module = viewWrapper.reactContext.getModule()!!
             if (
-                !view.sourceInitialized &&
-                module.isWebViewInstancePreserved(view.webViewKey)
+                !webView.sourceInitialized &&
+                module.isWebViewInstancePreserved(webView.webViewKey)
             ) {
-                val webView = module.getPreservedWebViewInstance(view.webViewKey!!)?.also { wb ->
-                    val parent = wb.parent as ViewGroup
-                    parent.removeView(wb)
-                    parent.addView(wb)
-                    view.sourceInitialized = true
-                }
+                val preservedWebView = module.getPreservedWebViewInstance(webView.webViewKey!!)!!
 
-                view.getRNCWebViewClient()?.emitFinishEvent(webView, source?.getString("uri"))
+                val parent = (preservedWebView.parent as ViewGroup?)
+                parent?.removeView(preservedWebView)
+
+                viewWrapper.webView = preservedWebView as RNCWebView
+                preservedWebView.sourceInitialized = true
+
+                preservedWebView.getRNCWebViewClient()?.emitFinishEvent(preservedWebView, source?.getString("uri"))
                 return
             } else {
                 // そうでない場合はインスタンスを保持し、loadUrl() などの以降の処理も行う
-                module.preserveWebViewInstance(view.webViewKey!!, view)
-                view.sourceInitialized = true
+                module.preserveWebViewInstance(webView.webViewKey!!, webView)
+                webView.sourceInitialized = true
             }
         }
 
@@ -443,7 +445,7 @@ class RNCWebViewManagerImpl(private val newArch: Boolean = false) {
             if (source.hasKey("html")) {
                 val html = source.getString("html")
                 val baseUrl = if (source.hasKey("baseUrl")) source.getString("baseUrl") else ""
-                view.loadDataWithBaseURL(
+                webView.loadDataWithBaseURL(
                     baseUrl,
                     html!!,
                     HTML_MIME_TYPE,
@@ -454,7 +456,7 @@ class RNCWebViewManagerImpl(private val newArch: Boolean = false) {
             }
             if (source.hasKey("uri")) {
                 val url = source.getString("uri")
-                val previousUrl = view.url
+                val previousUrl = webView.url
                 if (previousUrl != null && previousUrl == url) {
                     return
                 }
@@ -473,7 +475,7 @@ class RNCWebViewManagerImpl(private val newArch: Boolean = false) {
                         if (postData == null) {
                             postData = ByteArray(0)
                         }
-                        view.postUrl(url!!, postData)
+                        webView.postUrl(url!!, postData)
                         return
                     }
                 }
@@ -486,7 +488,7 @@ class RNCWebViewManagerImpl(private val newArch: Boolean = false) {
                         val name = headerCasted.get("name") ?: ""
                         val value = headerCasted.get("value") ?: ""
                         if ("user-agent" == name.lowercase(Locale.ENGLISH)) {
-                          view.settings.userAgentString = value
+                          webView.settings.userAgentString = value
                         } else {
                           headerMap[name] = value
                         }
@@ -497,18 +499,18 @@ class RNCWebViewManagerImpl(private val newArch: Boolean = false) {
                       while (iter.hasNextKey()) {
                         val key = iter.nextKey()
                         if ("user-agent" == key.lowercase(Locale.ENGLISH)) {
-                          view.settings.userAgentString = headers.getString(key)
+                          webView.settings.userAgentString = headers.getString(key)
                         } else {
                           headerMap[key] = headers.getString(key)
                         }
                       }
                     }
                 }
-                view.loadUrl(url!!, headerMap)
+                webView.loadUrl(url!!, headerMap)
                 return
             }
         }
-        view.loadUrl(BLANK_URL)
+        webView.loadUrl(BLANK_URL)
     }
 
     fun setMessagingModuleName(viewWrapper: RNCWebViewWrapper, value: String?) {

@@ -36,6 +36,8 @@ import java.util.Map;
 public class RNCWebViewManager extends ViewGroupManager<RNCWebViewWrapper>
         implements RNCWebViewManagerInterface<RNCWebViewWrapper> {
 
+    private static final String TAG = "RNCWebViewManager";
+
     private final ViewManagerDelegate<RNCWebViewWrapper> mDelegate;
     private final RNCWebViewManagerImpl mRNCWebViewManagerImpl;
 

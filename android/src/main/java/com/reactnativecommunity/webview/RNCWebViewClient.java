@@ -306,7 +306,11 @@ public class RNCWebViewClient extends WebViewClient {
 
     protected void emitFinishEvent(WebView webView, String url) {
         int reactTag = RNCWebViewWrapper.getReactTagFromWebView(webView);
-        UIManagerHelper.getEventDispatcherForReactTag((ReactContext) webView.getContext(), reactTag).dispatchEvent(new TopLoadingFinishEvent(reactTag, createWebViewEvent(webView, url)));
+        UIManagerHelper
+          .getEventDispatcherForReactTag((ReactContext) webView.getContext(), reactTag)
+          .dispatchEvent(
+            new TopLoadingFinishEvent(reactTag, createWebViewEvent(webView, url))
+          );
     }
 
     protected WritableMap createWebViewEvent(WebView webView, String url) {

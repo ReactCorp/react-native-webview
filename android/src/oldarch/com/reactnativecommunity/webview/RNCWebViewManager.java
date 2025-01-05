@@ -24,6 +24,7 @@ import com.reactnativecommunity.webview.events.TopShouldStartLoadWithRequestEven
 import java.util.Map;
 
 public class RNCWebViewManager extends ViewGroupManager<RNCWebViewWrapper> {
+    private static final String TAG = "RNCWebViewManager";
 
     private final RNCWebViewManagerImpl mRNCWebViewManagerImpl;
 
