@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.webkit.WebView
 import android.widget.FrameLayout
 
-
 /**
  * A [FrameLayout] container to hold the [RNCWebView].
  * We need this to prevent WebView crash when the WebView is out of viewport and
@@ -26,12 +25,17 @@ class RNCWebViewWrapper(context: Context, webView: RNCWebView) : FrameLayout(con
     get() = getChildAt(0) as RNCWebView
     set(value) {
       removeViewAt(0)
-      value.layoutParams = ViewGroup.LayoutParams(
-        ViewGroup.LayoutParams.MATCH_PARENT,
-        ViewGroup.LayoutParams.MATCH_PARENT,
-      )
+      value.setBackgroundColor(Color.TRANSPARENT)
+//      value.layoutParams = ViewGroup.LayoutParams(
+//        ViewGroup.LayoutParams.MATCH_PARENT,
+//        ViewGroup.LayoutParams.MATCH_PARENT,
+//      )
       addView(value)
     }
+
+  fun getWebViewOrNull(): RNCWebView? {
+    return getChildAt(0) as RNCWebView?
+  }
 
   companion object {
     /**

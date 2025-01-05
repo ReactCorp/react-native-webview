@@ -281,20 +281,20 @@ class RNCWebViewManagerImpl(private val newArch: Boolean = false) {
 
     fun onDropViewInstance(viewWrapper: RNCWebViewWrapper) {
         val module = viewWrapper.reactContext.getModule()!!
-        val view = viewWrapper.webView
+        val webView = viewWrapper.getWebViewOrNull() ?: return
+
         if (
-            view.configuredToKeepWebViewInstance() &&
-            module.isWebViewInstancePreserved(view.webViewKey)
+            webView.configuredToKeepWebViewInstance() &&
+            module.isWebViewInstancePreserved(webView.webViewKey)
         ) {
-            val preservedInstance = module.getPreservedWebViewInstance(view.webViewKey!!)
-            if (preservedInstance === view) {
+            val preservedInstance = module.getPreservedWebViewInstance(webView.webViewKey!!)
+            if (preservedInstance === webView) {
                 // WebView インスタンスが保持される設定だった場合、onDrop の各種処理をスキップする
                 Log.d(TAG, "WebView instance is preserved. Skip onDropViewInstance.")
                 return
             }
         }
 
-        val webView = viewWrapper.webView
         webView.themedReactContext.removeLifecycleEventListener(webView)
         webView.cleanupCallbacksAndDestroy()
         webView.mWebChromeClient = null
