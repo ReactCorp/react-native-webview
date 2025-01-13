@@ -11856,7 +11856,7 @@ react-native-macos@^0.76.0:
     ws "^6.2.3"
     yargs "^17.6.2"
 
-react-native-test-app@4.0.8:
+react-native-test-app@4.0.7:
   version "4.0.7"
   resolved "https://registry.yarnpkg.com/react-native-test-app/-/react-native-test-app-4.0.7.tgz#9795ec54b308445ca757858f0fdf85dbb6b733de"
   integrity sha512-dJrcq6aSVGEpYuM2EjB3jSeW6Cvm++XFx/Nc15q15UFnn1A4uoECVHwpmZd7AwwsXXyb1me/sOeo/tEePab27Q==
